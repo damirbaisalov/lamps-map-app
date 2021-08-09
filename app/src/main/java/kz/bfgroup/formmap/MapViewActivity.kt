@@ -16,19 +16,19 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.ModelStyle
-import com.yandex.mapkit.map.PlacemarkMapObject
+import com.yandex.mapkit.layers.GeoObjectTapEvent
+import com.yandex.mapkit.layers.GeoObjectTapListener
+import com.yandex.mapkit.map.*
+import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import com.yandex.runtime.ui_view.ViewProvider
 import org.w3c.dom.Text
 
-class MapViewActivity : AppCompatActivity() {
+class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListener {
 
     private lateinit var mapView: MapView
-    private lateinit var mapObjects: MapObjectCollection
+//    private lateinit var mapObjects: MapObjectCollection
 
 
     private lateinit var button1: Button
@@ -45,17 +45,31 @@ class MapViewActivity : AppCompatActivity() {
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )
-        mapObjects = mapView.map.mapObjects.addCollection()
+//        mapObjects = mapView.map.mapObjects.addCollection()
 
         button1 = findViewById(R.id.button1)
         button1.setOnClickListener {
             val intent = Intent(this,LampByIdActivity::class.java)
             startActivity(intent)
         }
-
-        val viewPlacemark = mapObjects.addPlacemark(Point(52.27401,77.00438), ImageProvider.fromResource(this,R.drawable.marker_logo))
+//        mapObjects.addPlacemark(Point(52.27401,77.00438), ImageProvider,)
+        mapView.map.mapObjects.addPlacemark(Point(52.27401,77.00438), ImageProvider.fromResource(this,R.drawable.marker_logo))
 //        mapView.map.mapObjects.addPlacemark(Point(52.27401,77.00438), ImageProvider.fromBitmap(drawSimpleBitmap("lkdsajkldjaslkdas")))
+
+        mapView.map.mapObjects.addTapListener { mapObject, point ->
+
+            Toast.makeText(applicationContext, mapObject.userData.toString(), Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, point.latitude.toString(), Toast.LENGTH_LONG).show()
+
+            val dialogFragment = CustomMarkerDialogFragment()
+            dialogFragment.show(supportFragmentManager, "customMarker")
+
+            return@addTapListener true
+        }
+        mapView.map.addTapListener(this)
+        mapView.map.addInputListener(this)
     }
+
 
 
 //    private fun createMapObjects() {
@@ -79,25 +93,25 @@ class MapViewActivity : AppCompatActivity() {
 //
 //    }
 
-    private fun drawSimpleBitmap(number: String): Bitmap {
-        val picSize = 30
-        val bitmap = Bitmap.createBitmap(picSize,picSize,Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        val paint = Paint()
-        paint.color = Color.GREEN
-        paint.style = Paint.Style.FILL
-        canvas.drawCircle((picSize/2).toFloat(), (picSize/2).toFloat(), (picSize/2).toFloat(), paint)
-
-        paint.color = Color.WHITE
-        paint.isAntiAlias = true
-        paint.textSize = 10F
-        paint.textAlign = Paint.Align.CENTER
-        canvas.drawText(number, (picSize/2).toFloat(),
-        picSize/2-((paint.descent()+paint.ascent())/2),paint)
-
-        return bitmap
-    }
+//    private fun drawSimpleBitmap(number: String): Bitmap {
+//        val picSize = 30
+//        val bitmap = Bitmap.createBitmap(picSize,picSize,Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(bitmap)
+//
+//        val paint = Paint()
+//        paint.color = Color.GREEN
+//        paint.style = Paint.Style.FILL
+//        canvas.drawCircle((picSize/2).toFloat(), (picSize/2).toFloat(), (picSize/2).toFloat(), paint)
+//
+//        paint.color = Color.WHITE
+//        paint.isAntiAlias = true
+//        paint.textSize = 10F
+//        paint.textAlign = Paint.Align.CENTER
+//        canvas.drawText(number, (picSize/2).toFloat(),
+//        picSize/2-((paint.descent()+paint.ascent())/2),paint)
+//
+//        return bitmap
+//    }
 
     override fun onStop() {
         super.onStop()
@@ -114,5 +128,24 @@ class MapViewActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onObjectTap(p0: GeoObjectTapEvent): Boolean {
+        val selectionMetaData:GeoObjectSelectionMetadata = p0
+            .geoObject
+            .metadataContainer
+            .getItem(GeoObjectSelectionMetadata::class.java)
+
+        mapView.map.selectGeoObject(selectionMetaData.id, selectionMetaData.layerId)
+
+        return true
+    }
+
+    override fun onMapTap(p0: Map, p1: Point) {
+        mapView.map.deselectGeoObject()
+    }
+
+    override fun onMapLongTap(p0: Map, p1: Point) {
+        TODO("Not yet implemented")
     }
 }
