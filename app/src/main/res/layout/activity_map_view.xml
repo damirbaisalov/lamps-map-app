@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_app"
+    tools:context=".MapViewActivity">
+
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Добавить фонарь"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:elevation="2dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:letterSpacing="0"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_activity_map_view_green_button"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Добавить группу"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:elevation="2dp"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_activity_map_view_blue_button"
+            android:letterSpacing="0"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/groups_layout"
+        android:layout_below="@id/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:elevation="2dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Группы"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:background="@drawable/bg_activity_map_view_groups_layout"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Все"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginEnd="3dp"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_outline_arrow_forward_ios_24"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/groups_layout"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
