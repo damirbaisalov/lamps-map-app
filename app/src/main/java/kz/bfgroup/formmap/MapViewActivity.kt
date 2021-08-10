@@ -1,6 +1,8 @@
 package kz.bfgroup.formmap
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -100,6 +102,15 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
             p,
             ViewProvider(view)
         )
+    }
+
+    private fun getSavedToken(): String {
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences(
+            MY_APP_USER_ACTIVITY,
+            Context.MODE_PRIVATE
+        )
+
+        return sharedPreferences.getString(USER_TOKEN, "default") ?: "default"
     }
 
     override fun onStop() {
