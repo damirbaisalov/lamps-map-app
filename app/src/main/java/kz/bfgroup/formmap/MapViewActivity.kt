@@ -73,7 +73,6 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
                 }
                 val dialogFragment = CustomMarkerDialogFragment()
                 dialogFragment.arguments = lampData
-//                dialogFragment.arguments = userIdData
                 dialogFragment.show(supportFragmentManager, "customMarker")
             }
 
