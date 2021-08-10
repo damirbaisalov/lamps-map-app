@@ -31,6 +31,12 @@ class MainActivity : AppCompatActivity() {
         phoneEditText = findViewById(R.id.phone_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
 
+//        phoneEditText.setOnClickListener {
+//            if (phoneEditText.text.toString().isEmpty()) {
+//                phoneEditText.setText("+7")
+//            }
+//        }
+
         openMapButton = findViewById(R.id.open_map_button1)
         openMapButton.setOnClickListener {
             if (phoneEditText.text.toString().isEmpty() || passwordEditText.toString().isEmpty()){
@@ -49,12 +55,16 @@ class MainActivity : AppCompatActivity() {
         ApiRetrofit.getApiClient().authUser(fields).enqueue(object : Callback<UserApiData> {
             override fun onResponse(call: Call<UserApiData>, response: Response<UserApiData>) {
                 if (response.isSuccessful){
-                    saveUserToken(response.body()!!.token)
+                    if(response.body()!!.token==null) {
+                        Toast.makeText(this@MainActivity,"Неверный номер телефона или пароль",Toast.LENGTH_LONG).show()
+                    } else {
+                        saveUserToken(response.body()!!.token)
 
-                    val intent = Intent(this@MainActivity,MapViewActivity::class.java)
-                    intent.putExtra("user_id", response.body()!!.id)
-                    startActivity(intent)
-                    finish()
+                        val intent = Intent(this@MainActivity,MapViewActivity::class.java)
+                        intent.putExtra("user_id", response.body()!!.id)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             }
 
