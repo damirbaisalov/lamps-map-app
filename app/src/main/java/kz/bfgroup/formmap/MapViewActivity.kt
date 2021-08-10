@@ -114,10 +114,10 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         MapKitFactory.getInstance().onStart()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        finish()
+//    }
 
     override fun onObjectTap(p0: GeoObjectTapEvent): Boolean {
         val selectionMetaData:GeoObjectSelectionMetadata = p0

@@ -1,13 +1,7 @@
 package kz.bfgroup.formmap.data
 
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.security.SecureRandom
-import java.util.concurrent.TimeUnit
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.X509TrustManager
 
 object ApiRetrofit {
 
