@@ -18,6 +18,7 @@ import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.ui_view.ViewProvider
 import kz.bfgroup.formmap.data.ApiRetrofit
+import kz.bfgroup.formmap.models.GatewayApiData
 import kz.bfgroup.formmap.models.LampApiData
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,6 +54,7 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         }
 
         loadApiData()
+        loadGatewayMarkers()
 
         mapView.map.mapObjects.addTapListener { mapObject, point ->
 
@@ -113,6 +115,28 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         })
     }
 
+    private fun loadGatewayMarkers() {
+        ApiRetrofit.getApiClient().getGateways().enqueue(object :Callback<List<GatewayApiData>> {
+            override fun onResponse(call: Call<List<GatewayApiData>>, response: Response<List<GatewayApiData>>) {
+                if (response.isSuccessful){
+                    val list = response.body()!!
+
+                    for (index in list.indices) {
+                        val p = Point(
+                            list[index].positionX!!.toDouble(),
+                            list[index].positionY!!.toDouble()
+                        )
+                        drawGatewaysMarker(p)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<GatewayApiData>>, t: Throwable) {
+                Toast.makeText(this@MapViewActivity,t.message, Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
     private fun drawLampsMarker(p: Point) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_marker)
@@ -122,6 +146,16 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
             ViewProvider(view)
         )
 
+    }
+
+    private fun drawGatewaysMarker(p: Point) {
+        val view = View(applicationContext).apply {
+            background = applicationContext.getDrawable(R.drawable.ic_gateway_marker)
+        }
+        mapView.map.mapObjects.addPlacemark(
+            p,
+            ViewProvider(view)
+        )
     }
 
     private fun getSavedToken(): String {

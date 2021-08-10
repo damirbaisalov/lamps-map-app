@@ -40,7 +40,7 @@
         android:layout_marginTop="30dp"
         android:progressBackgroundTint="@color/blue_1"
         android:progress="5"
-        android:max="10"
+        android:max="100"
         android:paddingHorizontal="30dp"
         android:layout_marginBottom="10dp"
         />

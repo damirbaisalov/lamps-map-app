@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:inputType="phone"
-        android:textColorHighlight="@color/blue_1"
+        android:backgroundTint="@color/blue_1"
         android:hint="Номер телефона"
         />
 
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:hint="Пароль"
-        android:textColorHighlight="@color/blue_1"
+        android:backgroundTint="@color/blue_1"
         android:inputType="textPassword"
         />
 
