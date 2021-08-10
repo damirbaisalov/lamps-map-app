@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class LampApiData(
     @JsonProperty("id")
     val id: String?,
+    @JsonProperty("lamp_id")
+    val lampId: String?,
     @JsonProperty("position_x")
     val positionX: String?,
     @JsonProperty("position_y")

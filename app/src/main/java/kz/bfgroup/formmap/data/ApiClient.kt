@@ -17,4 +17,8 @@ interface ApiClient {
     @FormUrlEncoded
     @POST("auth/Auth.php")
     fun authUser(@FieldMap fields: Map<String, String>) : Call<UserApiData>
+
+    @FormUrlEncoded
+    @POST("request/add.php")
+    fun requestAdd(@FieldMap fields: Map<String, String>) : Call<ResponseBody>
 }

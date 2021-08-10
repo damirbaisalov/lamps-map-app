@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity() {
                 userAuth(fields)
             }
         }
-
-
     }
 
     private fun userAuth(fields: Map<String,String>) {

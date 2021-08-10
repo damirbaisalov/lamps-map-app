@@ -30,6 +30,9 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
 
     private lateinit var button1: Button
 
+    private lateinit var lampList: List<LampApiData>
+    private lateinit var userIdFromMainActivity: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapKitFactory.setApiKey("5082c38f-5a2f-4d28-8ecb-3371165769a0")
@@ -55,11 +58,28 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
 
         mapView.map.mapObjects.addTapListener { mapObject, point ->
 
-            Toast.makeText(applicationContext, mapObject.userData.toString(), Toast.LENGTH_LONG).show()
-            Toast.makeText(applicationContext, point.latitude.toString(), Toast.LENGTH_LONG).show()
+            val lampData = Bundle()
 
-            val dialogFragment = CustomMarkerDialogFragment()
-            dialogFragment.show(supportFragmentManager, "customMarker")
+            lampData.putString("user_id", userIdFromMainActivity)
+
+            if (mapObject is PlacemarkMapObject){
+                val placemark: PlacemarkMapObject = mapObject
+
+                for (i in lampList){
+                    if (
+                        placemark.geometry.latitude.toString() == i.positionX.toString()
+                        &&
+                        placemark.geometry.longitude.toString() == i.positionY.toString()
+                    ) {
+                        lampData.putString("lamp_id", i.lampId)
+                    }
+                }
+                val dialogFragment = CustomMarkerDialogFragment()
+                dialogFragment.arguments = lampData
+//                dialogFragment.arguments = userIdData
+                dialogFragment.show(supportFragmentManager, "customMarker")
+            }
+
 
             return@addTapListener true
         }
@@ -70,7 +90,9 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
     }
 
     private fun initViews(){
+        lampList = arrayListOf()
         button1 = findViewById(R.id.button1)
+        userIdFromMainActivity = intent.getStringExtra("user_id").toString()
     }
 
     private fun loadApiData() {
@@ -78,6 +100,8 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
             override fun onResponse(call: Call<List<LampApiData>>, response: Response<List<LampApiData>>) {
                 if (response.isSuccessful){
                     val list = response.body()!!
+                    lampList = list
+
                     for (index in list.indices) {
                         val p = Point(
                             list[index].positionX!!.toDouble(),
@@ -102,6 +126,7 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
             p,
             ViewProvider(view)
         )
+
     }
 
     private fun getSavedToken(): String {
