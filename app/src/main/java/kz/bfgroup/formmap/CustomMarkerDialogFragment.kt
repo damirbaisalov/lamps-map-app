@@ -1,17 +1,14 @@
 package kz.bfgroup.formmap
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsSeekBar
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kz.bfgroup.formmap.data.ApiRetrofit
-import kz.bfgroup.formmap.models.UserApiData
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -80,7 +77,7 @@ class CustomMarkerDialogFragment: DialogFragment() {
         ApiRetrofit.getApiClient().requestAdd(fields).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful){
-
+                    Toast.makeText(rootView.context,"Success request", Toast.LENGTH_LONG).show()
                 }
             }
 

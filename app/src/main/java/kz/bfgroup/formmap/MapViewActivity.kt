@@ -26,7 +26,6 @@ import retrofit2.Response
 class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListener {
 
     private lateinit var mapView: MapView
-//    private lateinit var mapObjects: MapObjectCollection
 
     private lateinit var button1: Button
 
@@ -45,7 +44,6 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )
-//        mapObjects = mapView.map.mapObjects.addCollection()
 
         initViews()
 
@@ -59,7 +57,6 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         mapView.map.mapObjects.addTapListener { mapObject, point ->
 
             val lampData = Bundle()
-
             lampData.putString("user_id", userIdFromMainActivity)
 
             if (mapObject is PlacemarkMapObject){
@@ -79,7 +76,6 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
 //                dialogFragment.arguments = userIdData
                 dialogFragment.show(supportFragmentManager, "customMarker")
             }
-
 
             return@addTapListener true
         }
@@ -149,11 +145,6 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         mapView.onStart()
         MapKitFactory.getInstance().onStart()
     }
-
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        finish()
-//    }
 
     override fun onObjectTap(p0: GeoObjectTapEvent): Boolean {
         val selectionMetaData:GeoObjectSelectionMetadata = p0
