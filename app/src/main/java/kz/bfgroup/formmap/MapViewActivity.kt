@@ -198,9 +198,9 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
                             list[index].positionY!!.toDouble()
                         )
                         if (list[index].status == "0") {
-                            drawLampsMarkerOff(p)
+                            drawLampsMarkerOff(p, list[index].lampId)
                         } else {
-                            drawLampsMarker(p)
+                            drawLampsMarker(p, list[index].lampId)
                         }
                     }
                 }
@@ -234,17 +234,18 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         })
     }
 
-    private fun drawLampsMarker(p: Point) {
+    private fun drawLampsMarker(p: Point, lampId: String?) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_marker)
         }
-        pointCollection.addPlacemark(
+        val placemark = pointCollection.addPlacemark(
             p,
             ViewProvider(view)
         )
+        placemark.userData = lampId
     }
 
-    private fun drawLampsMarkerOff(p: Point) {
+    private fun drawLampsMarkerOff(p: Point, lampId: String?) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_marker_off)
         }
@@ -252,13 +253,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
             p,
             ViewProvider(view)
         )
-        placemark.userData = "lol"
-
-//        placemark.addTapListener { mapObject, point ->
-//            mapObject.userData
-//            Toast.makeText(this, mapObject.userData.toString(),Toast.LENGTH_LONG).show()
-//            true
-//        }
+        placemark.userData = lampId
     }
 
     private fun drawGatewaysMarker(p: Point) {
@@ -305,18 +300,11 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
 
         if (p0 is PlacemarkMapObject){
             val placemark: PlacemarkMapObject = p0
-
-            for (i in lampList){
-                if (
-                    placemark.geometry.latitude.toString() == i.positionX.toString()
-                    &&
-                    placemark.geometry.longitude.toString() == i.positionY.toString()
-                ) {
-                    lampData.putString("lamp_id", i.lampId)
-                    val dialogFragment = CustomMarkerDialogFragment()
-                    dialogFragment.arguments = lampData
-                    dialogFragment.show(supportFragmentManager, "customMarker")
-                }
+            if (placemark.userData!=null){
+                lampData.putString("lamp_id", placemark.userData.toString())
+                val dialogFragment = CustomMarkerDialogFragment()
+                dialogFragment.arguments = lampData
+                dialogFragment.show(supportFragmentManager, "customMarker")
             }
         }
 
