@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.yandex.mapkit.MapKitFactory
 import kz.bfgroup.formmap.data.ApiRetrofit
 import kz.bfgroup.formmap.models.UserApiData
 import retrofit2.Call
@@ -27,6 +29,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        if (getSavedToken()!="default"){
+//            val intent = Intent(this@MainActivity,MapViewActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+//            startActivity(intent)
+//            finish()
+//        }
 
         phoneEditText = findViewById(R.id.phone_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
@@ -61,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                         saveUserToken(response.body()!!.token)
 
                         val intent = Intent(this@MainActivity,MapViewActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         intent.putExtra("user_id", response.body()!!.id)
                         startActivity(intent)
                         finish()
@@ -90,5 +100,30 @@ class MainActivity : AppCompatActivity() {
 
         return sharedPreferences.getString(USER_TOKEN, "default") ?: "default"
     }
+
+//    override fun onBackPressed() {
+//        Log.d("main", "onBackPressed")
+//        super.onBackPressed()
+//    }
+//
+//    override fun onStart() {
+//        Log.d("main", "onStart")
+//        super.onStart()
+//    }
+//
+//    override fun onStop() {
+//        Log.d("main", "onStop")
+//        super.onStop()
+//    }
+//
+//    override fun onResume() {
+//        Log.d("main", "onResume")
+//        super.onResume()
+//    }
+//
+//    override fun onPause() {
+//        Log.d("main", "onPause")
+//        super.onPause()
+//    }
 
 }
