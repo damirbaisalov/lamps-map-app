@@ -92,6 +92,14 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
 
         groupsLayout.setOnClickListener {
             mapView.map.mapObjects.addPlacemark(Point(52.27401,77.00438))
+
+            val myGroupAdapter: ArrayAdapter<String> = ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                groupsList
+            )
+            myGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = myGroupAdapter
 //            val groupDialogFragment = CustomGroupDialogFragment()
 //            groupDialogFragment.show(supportFragmentManager, "groupDialogFragment")
         }
@@ -133,17 +141,11 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         allLampTurnOffButton = findViewById(R.id.all_turn_off_request)
         allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
         userIdFromMainActivity = intent.getStringExtra("user_id").toString()
+
     }
 
     private fun spinnerAdapterInit(){
 //        selectedNameTextView = findViewById(R.id.selected_group_name_text_view)
-////        val myGroupAdapter: ArrayAdapter<String> = ArrayAdapter(
-////            this,
-////            android.R.layout.simple_list_item_1,
-////            groupsList
-////        )
-////        myGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-////        spinner.adapter = myGroupAdapter
 ////        if (spinner.selectedItem==null){
 ////            selectedNameTextView.text = "Все"
 ////        } else {
