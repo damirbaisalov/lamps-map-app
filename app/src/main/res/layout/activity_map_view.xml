@@ -98,7 +98,7 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/all_lamp_brightness"
+            android:id="@+id/all_lamp_brightness_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

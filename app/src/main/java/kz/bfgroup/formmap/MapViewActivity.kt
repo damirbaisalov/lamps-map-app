@@ -7,19 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.layers.GeoObjectTapEvent
-import com.yandex.mapkit.layers.GeoObjectTapListener
 import com.yandex.mapkit.map.*
-import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.ui_view.ViewProvider
 import kz.bfgroup.formmap.data.ApiRetrofit
 import kz.bfgroup.formmap.models.GatewayApiData
 import kz.bfgroup.formmap.models.LampApiData
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,8 +29,15 @@ class MapViewActivity : AppCompatActivity() {
 
     private lateinit var addLampButton: Button
 
+    private lateinit var allLampTurnOnButton: Button
+    private lateinit var allLampTurnOffButton: Button
+    private lateinit var allLampBrightnessEditText: EditText
+
     private lateinit var lampList: List<LampApiData>
+    private lateinit var lampIdList: ArrayList<String>
     private lateinit var userIdFromMainActivity: String
+
+    private lateinit var fields: Map<String, String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,28 @@ class MapViewActivity : AppCompatActivity() {
 
         loadApiData()
         loadGatewayMarkers()
+
+        allLampTurnOnButton.setOnClickListener {
+            fields = mutableMapOf(
+                "type" to "1",
+                "user_id" to userIdFromMainActivity,
+                "bright" to allLampBrightnessEditText.text.toString(),
+                "lamp_id" to lampIdList.toString()
+            )
+            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
+            addRequest()
+        }
+
+        allLampTurnOffButton.setOnClickListener {
+            fields = mutableMapOf(
+                "type" to "0",
+                "user_id" to userIdFromMainActivity,
+                "bright" to allLampBrightnessEditText.text.toString(),
+                "lamp_id" to lampIdList.toString()
+            )
+            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
+            addRequest()
+        }
 
         mapView.map.mapObjects.addTapListener { mapObject, point ->
             Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
@@ -85,8 +113,26 @@ class MapViewActivity : AppCompatActivity() {
 
     private fun initViews(){
         lampList = arrayListOf()
+        lampIdList = arrayListOf()
         addLampButton = findViewById(R.id.add_lamp_button)
+        allLampTurnOnButton = findViewById(R.id.all_turn_on_request)
+        allLampTurnOffButton = findViewById(R.id.all_turn_off_request)
+        allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
         userIdFromMainActivity = intent.getStringExtra("user_id").toString()
+    }
+
+    private fun addRequest() {
+        ApiRetrofit.getApiClient().requestAdd(fields).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful){
+                    Toast.makeText(this@MapViewActivity,response.body()!!.string(), Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Toast.makeText(this@MapViewActivity,"ERROR OCCURED", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun loadApiData() {
@@ -97,6 +143,7 @@ class MapViewActivity : AppCompatActivity() {
                     lampList = list
 
                     for (index in list.indices) {
+                        lampIdList.add(list[index].id!!)
                         val p = Point(
                             list[index].positionX!!.toDouble(),
                             list[index].positionY!!.toDouble()
