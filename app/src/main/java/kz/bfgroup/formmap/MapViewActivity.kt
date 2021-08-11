@@ -3,13 +3,11 @@ package kz.bfgroup.formmap
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -25,9 +23,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MapViewActivity : AppCompatActivity() {
+
+class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
 
     private lateinit var mapView: MapView
+    private lateinit var pointCollection: MapObjectCollection
+    private val MAPKIT_API_KEY: String = "d38f277d-bd07-4f06-83da-49501077d7ae"
 
     private lateinit var addLampButton: Button
     private lateinit var addGroupButton: Button
@@ -42,21 +43,28 @@ class MapViewActivity : AppCompatActivity() {
 
     private lateinit var groupsLayout: LinearLayout
     private lateinit var groupsList: ArrayList<String>
+    private lateinit var spinner: Spinner
+//    private lateinit var myGroupAdapter: ArrayAdapter<String>
+    private lateinit var selectedNameTextView: TextView
+
+    private lateinit var refreshMapImageView: ImageView
 
     private lateinit var fields: Map<String, String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        MapKitFactory.setApiKey("5082c38f-5a2f-4d28-8ecb-3371165769a0")
+        MapKitFactory.setApiKey(MAPKIT_API_KEY)
         MapKitFactory.initialize(this)
-
         setContentView(R.layout.activity_map_view)
+        super.onCreate(savedInstanceState)
+
         mapView = findViewById(R.id.map_view)
         mapView.map.move(
             CameraPosition(Point(52.27401,77.00438),11.0f,0.0f,0.0f),
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )
+        pointCollection = mapView.map.mapObjects.addCollection()
+        pointCollection.addTapListener(this)
 
         initViews()
 
@@ -71,12 +79,21 @@ class MapViewActivity : AppCompatActivity() {
         }
 
         loadApiData()
-        loadGroupsApiData()
         loadGatewayMarkers()
+        loadGroupsApiData()
+
+        spinnerAdapterInit()
+
+        refreshMapImageView.setOnClickListener {
+            pointCollection.clear()
+            loadApiData()
+            loadGatewayMarkers()
+        }
 
         groupsLayout.setOnClickListener {
-            val groupDialogFragment = CustomGroupDialogFragment()
-            groupDialogFragment.show(supportFragmentManager, "groupDialogFragment")
+            mapView.map.mapObjects.addPlacemark(Point(52.27401,77.00438))
+//            val groupDialogFragment = CustomGroupDialogFragment()
+//            groupDialogFragment.show(supportFragmentManager, "groupDialogFragment")
         }
 
         allLampTurnOnButton.setOnClickListener {
@@ -101,44 +118,37 @@ class MapViewActivity : AppCompatActivity() {
             addRequest()
         }
 
-        mapView.map.mapObjects.addTapListener { mapObject, point ->
-            Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
-            val lampData = Bundle()
-            lampData.putString("user_id", userIdFromMainActivity)
-
-            if (mapObject is PlacemarkMapObject){
-                val placemark: PlacemarkMapObject = mapObject
-
-                for (i in lampList){
-                    if (
-                        placemark.geometry.latitude.toString() == i.positionX.toString()
-                        &&
-                        placemark.geometry.longitude.toString() == i.positionY.toString()
-                    ) {
-                        lampData.putString("lamp_id", i.lampId)
-                        val dialogFragment = CustomMarkerDialogFragment()
-                        dialogFragment.arguments = lampData
-                        dialogFragment.show(supportFragmentManager, "customMarker")
-                    }
-                }
-            }
-
-            return@addTapListener true
-        }
-
     }
 
     private fun initViews(){
         lampList = arrayListOf()
         lampIdList = arrayListOf()
         groupsList = arrayListOf()
+        spinner = findViewById(R.id.spinner)
         groupsLayout = findViewById(R.id.groups_layout)
         addLampButton = findViewById(R.id.add_lamp_button)
         addGroupButton = findViewById(R.id.add_group_button)
+        refreshMapImageView = findViewById(R.id.refresh_map_image_view)
         allLampTurnOnButton = findViewById(R.id.all_turn_on_request)
         allLampTurnOffButton = findViewById(R.id.all_turn_off_request)
         allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
         userIdFromMainActivity = intent.getStringExtra("user_id").toString()
+    }
+
+    private fun spinnerAdapterInit(){
+//        selectedNameTextView = findViewById(R.id.selected_group_name_text_view)
+////        val myGroupAdapter: ArrayAdapter<String> = ArrayAdapter(
+////            this,
+////            android.R.layout.simple_list_item_1,
+////            groupsList
+////        )
+////        myGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+////        spinner.adapter = myGroupAdapter
+////        if (spinner.selectedItem==null){
+////            selectedNameTextView.text = "Все"
+////        } else {
+////            selectedNameTextView.text = spinner.selectedItem.toString()
+////        }
     }
 
     private fun addRequest() {
@@ -226,29 +236,34 @@ class MapViewActivity : AppCompatActivity() {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_marker)
         }
-        mapView.map.mapObjects.addPlacemark(
+        pointCollection.addPlacemark(
             p,
             ViewProvider(view)
         )
-
     }
 
     private fun drawLampsMarkerOff(p: Point) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_marker_off)
         }
-        mapView.map.mapObjects.addPlacemark(
+        val placemark = pointCollection.addPlacemark(
             p,
             ViewProvider(view)
         )
+        placemark.userData = "lol"
 
+//        placemark.addTapListener { mapObject, point ->
+//            mapObject.userData
+//            Toast.makeText(this, mapObject.userData.toString(),Toast.LENGTH_LONG).show()
+//            true
+//        }
     }
 
     private fun drawGatewaysMarker(p: Point) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_gateway_marker)
         }
-        mapView.map.mapObjects.addPlacemark(
+        pointCollection.addPlacemark(
             p,
             ViewProvider(view)
         )
@@ -265,19 +280,44 @@ class MapViewActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
         MapKitFactory.getInstance().onStop()
+        mapView.onStop()
     }
 
     override fun onStart() {
         super.onStart()
-        mapView.onStart()
         MapKitFactory.getInstance().onStart()
+        mapView.onStart()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        loadApiData()
-//    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 
+    override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
+        Log.d("TAG", p0.toString())
+        Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
+        val lampData = Bundle()
+        lampData.putString("user_id", userIdFromMainActivity)
+
+        if (p0 is PlacemarkMapObject){
+            val placemark: PlacemarkMapObject = p0
+
+            for (i in lampList){
+                if (
+                    placemark.geometry.latitude.toString() == i.positionX.toString()
+                    &&
+                    placemark.geometry.longitude.toString() == i.positionY.toString()
+                ) {
+                    lampData.putString("lamp_id", i.lampId)
+                    val dialogFragment = CustomMarkerDialogFragment()
+                    dialogFragment.arguments = lampData
+                    dialogFragment.show(supportFragmentManager, "customMarker")
+                }
+            }
+        }
+
+        return true
+    }
 }

@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "kz.bfgroup.formmap"
@@ -32,6 +32,12 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+}
+
+repositories {
+    maven {
+        url "http://maven.google.com/"
     }
 }
 
