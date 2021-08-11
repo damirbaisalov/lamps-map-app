@@ -90,7 +90,7 @@
         android:padding="5dp"
         android:paddingHorizontal="10dp"
         android:layout_marginHorizontal="30dp"
-        android:inputType="number"
+        android:inputType="text"
         />
 
     <EditText
@@ -105,7 +105,7 @@
         android:padding="5dp"
         android:paddingHorizontal="10dp"
         android:layout_marginHorizontal="30dp"
-        android:inputType="number"
+        android:inputType="text"
         />
 
     <Button
