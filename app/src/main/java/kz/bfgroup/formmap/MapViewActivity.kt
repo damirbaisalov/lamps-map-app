@@ -41,11 +41,8 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
     private lateinit var lampIdList: ArrayList<String>
     private lateinit var userIdFromMainActivity: String
 
-    private lateinit var groupsLayout: LinearLayout
     private lateinit var groupsList: ArrayList<String>
     private lateinit var spinner: Spinner
-//    private lateinit var myGroupAdapter: ArrayAdapter<String>
-    private lateinit var selectedNameTextView: TextView
 
     private lateinit var refreshMapImageView: ImageView
 
@@ -82,26 +79,10 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         loadGatewayMarkers()
         loadGroupsApiData()
 
-        spinnerAdapterInit()
-
         refreshMapImageView.setOnClickListener {
             pointCollection.clear()
             loadApiData()
             loadGatewayMarkers()
-        }
-
-        groupsLayout.setOnClickListener {
-            mapView.map.mapObjects.addPlacemark(Point(52.27401,77.00438))
-
-            val myGroupAdapter: ArrayAdapter<String> = ArrayAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                groupsList
-            )
-            myGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = myGroupAdapter
-//            val groupDialogFragment = CustomGroupDialogFragment()
-//            groupDialogFragment.show(supportFragmentManager, "groupDialogFragment")
         }
 
         allLampTurnOnButton.setOnClickListener {
@@ -133,7 +114,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         lampIdList = arrayListOf()
         groupsList = arrayListOf()
         spinner = findViewById(R.id.spinner)
-        groupsLayout = findViewById(R.id.groups_layout)
         addLampButton = findViewById(R.id.add_lamp_button)
         addGroupButton = findViewById(R.id.add_group_button)
         refreshMapImageView = findViewById(R.id.refresh_map_image_view)
@@ -142,15 +122,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
         userIdFromMainActivity = intent.getStringExtra("user_id").toString()
 
-    }
-
-    private fun spinnerAdapterInit(){
-//        selectedNameTextView = findViewById(R.id.selected_group_name_text_view)
-////        if (spinner.selectedItem==null){
-////            selectedNameTextView.text = "Все"
-////        } else {
-////            selectedNameTextView.text = spinner.selectedItem.toString()
-////        }
     }
 
     private fun addRequest() {
@@ -172,9 +143,18 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
             override fun onResponse(call: Call<List<GroupApiData>>, response: Response<List<GroupApiData>>) {
                 if (response.isSuccessful){
                     val list = response.body()!!
+                    groupsList.add("Все")
                     for (index in list.indices){
                         groupsList.add(list[index].name!!)
                     }
+
+                    val myGroupAdapter: ArrayAdapter<String> = ArrayAdapter(
+                        this@MapViewActivity,
+                        android.R.layout.simple_list_item_1,
+                        groupsList
+                    )
+                    myGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinner.adapter = myGroupAdapter
                 }
             }
 
