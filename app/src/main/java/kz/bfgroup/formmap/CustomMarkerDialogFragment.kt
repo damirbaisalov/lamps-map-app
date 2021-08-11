@@ -77,7 +77,7 @@ class CustomMarkerDialogFragment: DialogFragment() {
         ApiRetrofit.getApiClient().requestAdd(fields).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful){
-                    Toast.makeText(rootView.context,"Success request", Toast.LENGTH_LONG).show()
+                    Toast.makeText(rootView.context,response.body()!!.string(), Toast.LENGTH_LONG).show()
                 }
             }
 

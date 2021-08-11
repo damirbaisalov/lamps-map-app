@@ -19,7 +19,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/add_lamp_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Добавить фонарь"
@@ -34,6 +34,7 @@
             />
 
         <Button
+            android:id="@+id/add_group_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Добавить группу"
@@ -106,6 +107,7 @@
             android:hint="Яркость"
             android:background="@drawable/bg_activity_map_view_groups_layout"
             android:padding="5dp"
+            android:paddingHorizontal="10dp"
             android:inputType="number"
             />
     </LinearLayout>

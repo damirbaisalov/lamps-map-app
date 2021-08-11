@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".NewLampActivity">
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавление лампы"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="ID лампы"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="Широта"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="Долгота"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_gateway_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="ID шлюза"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="Улица"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/new_lamp_district"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxLines="1"
+        android:hint="Район"
+        android:elevation="2dp"
+        android:background="@drawable/bg_activity_map_view_groups_layout"
+        android:padding="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        />
+
+    <Button
+        android:id="@+id/new_lamp_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить фонарь"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:elevation="2dp"
+        android:layout_marginTop="30dp"
+        android:letterSpacing="0"
+        android:textColor="@color/white"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_activity_map_view_green_button"
+        />
+
+
+
+</LinearLayout>

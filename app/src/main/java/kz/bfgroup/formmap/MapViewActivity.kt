@@ -24,11 +24,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListener {
+class MapViewActivity : AppCompatActivity() {
 
     private lateinit var mapView: MapView
 
-    private lateinit var button1: Button
+    private lateinit var addLampButton: Button
 
     private lateinit var lampList: List<LampApiData>
     private lateinit var userIdFromMainActivity: String
@@ -48,8 +48,8 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
 
         initViews()
 
-        button1.setOnClickListener {
-            val intent = Intent(this,LampByIdActivity::class.java)
+        addLampButton.setOnClickListener {
+            val intent = Intent(this,NewLampActivity::class.java)
             startActivity(intent)
         }
 
@@ -57,7 +57,7 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         loadGatewayMarkers()
 
         mapView.map.mapObjects.addTapListener { mapObject, point ->
-
+            Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
             val lampData = Bundle()
             lampData.putString("user_id", userIdFromMainActivity)
 
@@ -71,24 +71,21 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
                         placemark.geometry.longitude.toString() == i.positionY.toString()
                     ) {
                         lampData.putString("lamp_id", i.lampId)
+                        val dialogFragment = CustomMarkerDialogFragment()
+                        dialogFragment.arguments = lampData
+                        dialogFragment.show(supportFragmentManager, "customMarker")
                     }
                 }
-                val dialogFragment = CustomMarkerDialogFragment()
-                dialogFragment.arguments = lampData
-                dialogFragment.show(supportFragmentManager, "customMarker")
             }
 
             return@addTapListener true
         }
 
-        mapView.map.addTapListener(this)
-        mapView.map.addInputListener(this)
-
     }
 
     private fun initViews(){
         lampList = arrayListOf()
-        button1 = findViewById(R.id.button1)
+        addLampButton = findViewById(R.id.add_lamp_button)
         userIdFromMainActivity = intent.getStringExtra("user_id").toString()
     }
 
@@ -104,7 +101,11 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
                             list[index].positionX!!.toDouble(),
                             list[index].positionY!!.toDouble()
                         )
-                        drawLampsMarker(p)
+                        if (list[index].status == "0") {
+                            drawLampsMarkerOff(p)
+                        } else {
+                            drawLampsMarker(p)
+                        }
                     }
                 }
             }
@@ -148,6 +149,17 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
 
     }
 
+    private fun drawLampsMarkerOff(p: Point) {
+        val view = View(applicationContext).apply {
+            background = applicationContext.getDrawable(R.drawable.ic_marker_off)
+        }
+        mapView.map.mapObjects.addPlacemark(
+            p,
+            ViewProvider(view)
+        )
+
+    }
+
     private fun drawGatewaysMarker(p: Point) {
         val view = View(applicationContext).apply {
             background = applicationContext.getDrawable(R.drawable.ic_gateway_marker)
@@ -179,22 +191,9 @@ class MapViewActivity : AppCompatActivity() , GeoObjectTapListener, InputListene
         MapKitFactory.getInstance().onStart()
     }
 
-    override fun onObjectTap(p0: GeoObjectTapEvent): Boolean {
-        val selectionMetaData:GeoObjectSelectionMetadata = p0
-            .geoObject
-            .metadataContainer
-            .getItem(GeoObjectSelectionMetadata::class.java)
+//    override fun onResume() {
+//        super.onResume()
+//        loadApiData()
+//    }
 
-        mapView.map.selectGeoObject(selectionMetaData.id, selectionMetaData.layerId)
-
-        return true
-    }
-
-    override fun onMapTap(p0: Map, p1: Point) {
-        mapView.map.deselectGeoObject()
-    }
-
-    override fun onMapLongTap(p0: Map, p1: Point) {
-        TODO("Not yet implemented")
-    }
 }
