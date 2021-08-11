@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FormMap">
+        <activity android:name=".NewGroupActivity" />
         <activity android:name=".NewLampActivity" />
         <activity android:name=".LampByIdActivity" />
         <activity android:name=".MapViewActivity" />

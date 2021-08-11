@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -17,6 +18,7 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.ui_view.ViewProvider
 import kz.bfgroup.formmap.data.ApiRetrofit
 import kz.bfgroup.formmap.models.GatewayApiData
+import kz.bfgroup.formmap.models.GroupApiData
 import kz.bfgroup.formmap.models.LampApiData
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,6 +30,7 @@ class MapViewActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
 
     private lateinit var addLampButton: Button
+    private lateinit var addGroupButton: Button
 
     private lateinit var allLampTurnOnButton: Button
     private lateinit var allLampTurnOffButton: Button
@@ -36,6 +39,9 @@ class MapViewActivity : AppCompatActivity() {
     private lateinit var lampList: List<LampApiData>
     private lateinit var lampIdList: ArrayList<String>
     private lateinit var userIdFromMainActivity: String
+
+    private lateinit var groupsLayout: LinearLayout
+    private lateinit var groupsList: ArrayList<String>
 
     private lateinit var fields: Map<String, String>
 
@@ -59,8 +65,19 @@ class MapViewActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        addGroupButton.setOnClickListener {
+            val intent = Intent(this,NewGroupActivity::class.java)
+            startActivity(intent)
+        }
+
         loadApiData()
+        loadGroupsApiData()
         loadGatewayMarkers()
+
+        groupsLayout.setOnClickListener {
+            val groupDialogFragment = CustomGroupDialogFragment()
+            groupDialogFragment.show(supportFragmentManager, "groupDialogFragment")
+        }
 
         allLampTurnOnButton.setOnClickListener {
             fields = mutableMapOf(
@@ -114,7 +131,10 @@ class MapViewActivity : AppCompatActivity() {
     private fun initViews(){
         lampList = arrayListOf()
         lampIdList = arrayListOf()
+        groupsList = arrayListOf()
+        groupsLayout = findViewById(R.id.groups_layout)
         addLampButton = findViewById(R.id.add_lamp_button)
+        addGroupButton = findViewById(R.id.add_group_button)
         allLampTurnOnButton = findViewById(R.id.all_turn_on_request)
         allLampTurnOffButton = findViewById(R.id.all_turn_off_request)
         allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
@@ -131,6 +151,23 @@ class MapViewActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Toast.makeText(this@MapViewActivity,"ERROR OCCURED", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun loadGroupsApiData() {
+        ApiRetrofit.getApiClient().getGroups().enqueue(object :Callback<List<GroupApiData>> {
+            override fun onResponse(call: Call<List<GroupApiData>>, response: Response<List<GroupApiData>>) {
+                if (response.isSuccessful){
+                    val list = response.body()!!
+                    for (index in list.indices){
+                        groupsList.add(list[index].name!!)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<GroupApiData>>, t: Throwable) {
+                Toast.makeText(this@MapViewActivity,t.message, Toast.LENGTH_LONG).show()
             }
         })
     }

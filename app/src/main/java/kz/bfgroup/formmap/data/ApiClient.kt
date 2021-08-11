@@ -6,10 +6,7 @@ import kz.bfgroup.formmap.models.LampApiData
 import kz.bfgroup.formmap.models.UserApiData
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApiClient {
 
@@ -17,6 +14,7 @@ interface ApiClient {
     @GET("lamps/get.php")
     fun getLamps(): Call<List<LampApiData>>
 
+    //
     @GET("groups/get.php")
     fun getGroups(): Call<List<GroupApiData>>
 
@@ -34,9 +32,13 @@ interface ApiClient {
     @POST("request/add.php")
     fun requestAdd(@FieldMap fields: Map<String, String>) : Call<ResponseBody>
 
+    //ok
     @FormUrlEncoded
     @POST("lamps/add.php")
     fun addLapm(@FieldMap fields: Map<String, String>) : Call<ResponseBody>
 
-    
+    //ok
+    @FormUrlEncoded
+    @POST("groups/add.php")
+    fun addGroup(@Field("name") name: String) : Call<ResponseBody>
 }
