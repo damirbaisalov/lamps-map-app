@@ -5,10 +5,14 @@
     android:layout_height="wrap_content"
     android:elevation="4dp">
 
-    <ImageView
+    <ImageButton
+        android:id="@+id/activity_lamp_by_id_back_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
         android:src="@drawable/ic_outline_arrow_back_24"
+        android:background="@drawable/bg_activity_lamp_by_id_back_button"
+        android:padding="8dp"
         />
 
 </androidx.appcompat.widget.Toolbar>
