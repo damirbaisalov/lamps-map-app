@@ -1,5 +1,6 @@
 package kz.bfgroup.formmap
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,8 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.*
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.user_location.UserLocationObjectListener
+import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.ui_view.ViewProvider
 import kz.bfgroup.formmap.data.ApiRetrofit
 import kz.bfgroup.formmap.models.GatewayApiData
@@ -22,12 +26,24 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.core.content.ContextCompat.checkSelfPermission
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.PointF
+import android.media.Image
+import com.yandex.runtime.image.ImageProvider.fromResource
+import androidx.core.app.ActivityCompat.requestPermissions
+import com.yandex.mapkit.user_location.UserLocationLayer
 
 
-class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
+class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationObjectListener, CameraListener {
 
     private lateinit var mapView: MapView
     private lateinit var pointCollection: MapObjectCollection
+    private val requestPermissionLocation = 1
+    private var permissionLocation = false
+    private var followUserLocation = false
+    private lateinit var userLocationLayer: UserLocationLayer
+    private var routeStartLocation = Point(52.27401,77.00438)
 
     private lateinit var addLampButton: Button
     private lateinit var addGroupButton: Button
@@ -45,6 +61,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
     private lateinit var groupsTextView: TextView
 
     private lateinit var refreshMapImageView: ImageView
+    private lateinit var userLocationImageView: ImageView
 
     private lateinit var fields: Map<String, String>
 
@@ -54,12 +71,16 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         setContentView(R.layout.activity_map_view)
         super.onCreate(savedInstanceState)
 
+
         mapView = findViewById(R.id.map_view)
-        mapView.map.move(
-            CameraPosition(Point(52.27401,77.00438),11.0f,0.0f,0.0f),
-            Animation(Animation.Type.SMOOTH, 0F),
-            null
-        )
+        checkPermission()
+        userInterface()
+
+//        mapView.map.move(
+//            CameraPosition(routeStartLocation,11.0f,0.0f,0.0f),
+//            Animation(Animation.Type.SMOOTH, 0F),
+//            null
+//        )
         pointCollection = mapView.map.mapObjects.addCollection()
         pointCollection.addTapListener(this)
 
@@ -289,5 +310,127 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
         }
 
         return true
+    }
+
+    ////////////////////////////////////
+
+    private fun checkPermission(){
+        val permissionLocation = checkSelfPermission(this, ACCESS_FINE_LOCATION)
+        if (permissionLocation != PERMISSION_GRANTED) {
+            requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), requestPermissionLocation)
+        } else {
+            onMapReady()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            requestPermissionLocation -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
+                    onMapReady()
+                }
+
+                return
+            }
+        }
+    }
+
+    private fun userInterface() {
+        userLocationImageView = findViewById(R.id.user_location_map_image_view)
+        userLocationImageView.setOnClickListener {
+            if (permissionLocation) {
+
+                cameraUserPosition()
+                followUserLocation = true
+
+            } else {
+                checkPermission()
+            }
+        }
+
+    }
+
+    private fun onMapReady(){
+        val mapKit = MapKitFactory.getInstance()
+        userLocationLayer = mapKit.createUserLocationLayer(mapView.mapWindow)
+        userLocationLayer.isVisible = true
+        userLocationLayer.isHeadingEnabled = true
+        userLocationLayer.setObjectListener(this)
+
+        mapView.map.addCameraListener(this)
+
+        cameraUserPosition()
+
+        permissionLocation = true
+    }
+
+    private fun cameraUserPosition() {
+        if (userLocationLayer.cameraPosition() != null){
+            routeStartLocation = userLocationLayer.cameraPosition()!!.target
+            mapView.map.move(
+                CameraPosition(routeStartLocation,16f,0f,0f),
+                Animation(Animation.Type.SMOOTH,1F),
+                null
+            )
+        } else {
+            mapView.map.move(CameraPosition(routeStartLocation,11f, 0f,0f))
+        }
+    }
+
+    private fun setAnchor() {
+        userLocationLayer.setAnchor(
+            PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.5).toFloat()),
+            PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.83).toFloat())
+        )
+
+        followUserLocation = false
+    }
+
+    private fun noAnchor() {
+        userLocationLayer.resetAnchor()
+
+    }
+
+    override fun onObjectAdded(p0: UserLocationView) {
+        setAnchor()
+
+        val view = View(applicationContext).apply {
+            background = applicationContext.getDrawable(R.drawable.ic_user_location)
+        }
+
+        p0.pin.setView(ViewProvider(view))
+        p0.arrow.setView(ViewProvider(view))
+//        p0.pin.setIcon(fromResource(this,R.drawable.marker_logo))
+//        p0.arrow.setIcon(fromResource(this,R.drawable.marker_logo))
+    }
+
+    override fun onObjectRemoved(p0: UserLocationView) {
+
+    }
+
+    override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {
+
+    }
+
+    override fun onCameraPositionChanged(
+        p0: com.yandex.mapkit.map.Map,
+        p1: CameraPosition,
+        p2: CameraUpdateReason,
+        p3: Boolean
+    ) {
+        if (p3){
+            if (followUserLocation){
+                setAnchor()
+            }
+        } else {
+            if (!followUserLocation) {
+                noAnchor()
+            }
+        }
     }
 }
