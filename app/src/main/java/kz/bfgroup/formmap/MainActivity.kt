@@ -100,30 +100,4 @@ class MainActivity : AppCompatActivity() {
 
         return sharedPreferences.getString(USER_TOKEN, "default") ?: "default"
     }
-
-//    override fun onBackPressed() {
-//        Log.d("main", "onBackPressed")
-//        super.onBackPressed()
-//    }
-//
-//    override fun onStart() {
-//        Log.d("main", "onStart")
-//        super.onStart()
-//    }
-//
-//    override fun onStop() {
-//        Log.d("main", "onStop")
-//        super.onStop()
-//    }
-//
-//    override fun onResume() {
-//        Log.d("main", "onResume")
-//        super.onResume()
-//    }
-//
-//    override fun onPause() {
-//        Log.d("main", "onPause")
-//        super.onPause()
-//    }
-
 }

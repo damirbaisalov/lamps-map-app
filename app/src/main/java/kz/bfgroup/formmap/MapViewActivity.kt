@@ -42,6 +42,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
 
     private lateinit var groupsList: ArrayList<String>
     private lateinit var spinner: Spinner
+    private lateinit var groupsTextView: TextView
 
     private lateinit var refreshMapImageView: ImageView
 
@@ -49,7 +50,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        MapKitFactory.setApiKey(BuildConfig.YMP_KEY)
         MapKitFactory.initialize(this)
         setContentView(R.layout.activity_map_view)
         super.onCreate(savedInstanceState)
@@ -83,6 +83,11 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
             pointCollection.clear()
             loadApiData()
             loadGatewayMarkers()
+        }
+
+        groupsTextView = findViewById(R.id.groups_text_view)
+        groupsTextView.setOnClickListener {
+            pointCollection.addPlacemark(Point(52.27401,77.00438))
         }
 
         allLampTurnOnButton.setOnClickListener {
@@ -256,36 +261,16 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener {
     }
 
     override fun onStop() {
-        Log.d("map", "onStop")
-        super.onStop()
         MapKitFactory.getInstance().onStop()
         mapView.onStop()
+        super.onStop()
     }
 
     override fun onStart() {
-        Log.d("map", "onStart")
-        super.onStart()
         MapKitFactory.getInstance().onStart()
         mapView.onStart()
+        super.onStart()
     }
-
-    override fun onBackPressed() {
-        Log.d("map", "onBackPressed")
-        super.onBackPressed()
-        MapKitFactory.getInstance().onStop()
-        mapView.onStop()
-    }
-
-        override fun onResume() {
-        Log.d("map", "onResume")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.d("map", "onPause")
-        super.onPause()
-    }
-
 
     override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
         Log.d("TAG", p0.toString())
