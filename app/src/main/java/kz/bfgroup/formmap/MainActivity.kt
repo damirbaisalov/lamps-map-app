@@ -18,6 +18,7 @@ import retrofit2.Response
 
 const val MY_APP_USER_ACTIVITY = "MY_APP_USER_ACTIVITY"
 const val USER_TOKEN = "USER_TOKEN"
+const val USER_ID = "USER_ID"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var openMapButton : Button
@@ -30,21 +31,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        if (getSavedToken()!="default"){
-//            val intent = Intent(this@MainActivity,MapViewActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-//            startActivity(intent)
-//            finish()
-//        }
+        if (getSavedToken()!="default"){
+            val intent = Intent(this@MainActivity,MapViewActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
+        }
 
         phoneEditText = findViewById(R.id.phone_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
-
-//        phoneEditText.setOnClickListener {
-//            if (phoneEditText.text.toString().isEmpty()) {
-//                phoneEditText.setText("+7")
-//            }
-//        }
 
         openMapButton = findViewById(R.id.open_map_button1)
         openMapButton.setOnClickListener {
@@ -67,11 +62,10 @@ class MainActivity : AppCompatActivity() {
                     if(response.body()!!.token==null) {
                         Toast.makeText(this@MainActivity,"Неверный номер телефона или пароль",Toast.LENGTH_LONG).show()
                     } else {
-                        saveUserToken(response.body()!!.token)
+                        saveUserData(response.body()!!.token, response.body()!!.id)
 
                         val intent = Intent(this@MainActivity,MapViewActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.putExtra("user_id", response.body()!!.id)
                         startActivity(intent)
                         finish()
                     }
@@ -84,11 +78,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun saveUserToken(token: String?) {
+    private fun saveUserData(token: String?, id: String?) {
         val sharedPref = this.getSharedPreferences(MY_APP_USER_ACTIVITY, Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPref.edit()
-
         editor.putString(USER_TOKEN, token)
+        editor.putString(USER_ID, id)
         editor.apply()
     }
 

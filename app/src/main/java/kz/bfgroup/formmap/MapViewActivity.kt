@@ -54,7 +54,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
 
     private lateinit var lampList: List<LampApiData>
     private lateinit var lampIdList: ArrayList<String>
-    private lateinit var userIdFromMainActivity: String
 
     private lateinit var groupsList: ArrayList<String>
     private lateinit var spinner: Spinner
@@ -76,11 +75,11 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         checkPermission()
         userInterface()
 
-//        mapView.map.move(
-//            CameraPosition(routeStartLocation,11.0f,0.0f,0.0f),
-//            Animation(Animation.Type.SMOOTH, 0F),
-//            null
-//        )
+        mapView.map.move(
+            CameraPosition(routeStartLocation,11.0f,0.0f,0.0f),
+            Animation(Animation.Type.SMOOTH, 0F),
+            null
+        )
         pointCollection = mapView.map.mapObjects.addCollection()
         pointCollection.addTapListener(this)
 
@@ -114,7 +113,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         allLampTurnOnButton.setOnClickListener {
             fields = mutableMapOf(
                 "type" to "1",
-                "user_id" to userIdFromMainActivity,
+                "user_id" to getSavedUserID(),
                 "bright" to allLampBrightnessEditText.text.toString(),
                 "lamp_id" to lampIdList.toString()
             )
@@ -125,7 +124,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         allLampTurnOffButton.setOnClickListener {
             fields = mutableMapOf(
                 "type" to "0",
-                "user_id" to userIdFromMainActivity,
+                "user_id" to getSavedUserID(),
                 "bright" to allLampBrightnessEditText.text.toString(),
                 "lamp_id" to lampIdList.toString()
             )
@@ -146,7 +145,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         allLampTurnOnButton = findViewById(R.id.all_turn_on_request)
         allLampTurnOffButton = findViewById(R.id.all_turn_off_request)
         allLampBrightnessEditText = findViewById(R.id.all_lamp_brightness_edit_text)
-        userIdFromMainActivity = intent.getStringExtra("user_id").toString()
 
     }
 
@@ -272,15 +270,6 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         )
     }
 
-    private fun getSavedToken(): String {
-        val sharedPreferences: SharedPreferences = this.getSharedPreferences(
-            MY_APP_USER_ACTIVITY,
-            Context.MODE_PRIVATE
-        )
-
-        return sharedPreferences.getString(USER_TOKEN, "default") ?: "default"
-    }
-
     override fun onStop() {
         MapKitFactory.getInstance().onStop()
         mapView.onStop()
@@ -297,7 +286,7 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         Log.d("TAG", p0.toString())
         Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
         val lampData = Bundle()
-        lampData.putString("user_id", userIdFromMainActivity)
+        lampData.putString("user_id", getSavedUserID())
 
         if (p0 is PlacemarkMapObject){
             val placemark: PlacemarkMapObject = p0
@@ -310,6 +299,24 @@ class MapViewActivity : AppCompatActivity(), MapObjectTapListener, UserLocationO
         }
 
         return true
+    }
+
+    private fun getSavedToken(): String {
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences(
+            MY_APP_USER_ACTIVITY,
+            Context.MODE_PRIVATE
+        )
+
+        return sharedPreferences.getString(USER_TOKEN, "default") ?: "default"
+    }
+
+    private fun getSavedUserID(): String {
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences(
+            MY_APP_USER_ACTIVITY,
+            Context.MODE_PRIVATE
+        )
+
+        return sharedPreferences.getString(USER_ID, "default") ?: "default"
     }
 
     ////////////////////////////////////
