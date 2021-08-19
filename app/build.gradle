@@ -1,11 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.google.secrets_gradle_plugin' version '0.4'
 }
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "kz.bfgroup.formmap"
@@ -15,6 +16,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -35,6 +37,12 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "http://maven.google.com/"
+    }
+}
+
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -51,8 +59,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
 
-    // Полная библиотека в дополнение к lite версии предоставляет автомобильную маршрутизацию,
-    // веломаршрутизацию, пешеходную маршрутизацию и маршрутизацию на общественном транспорте,
-    // поиск, suggest, геокодирование и отображение панорам.
-    implementation 'com.yandex.android:maps.mobile:4.0.0-full'
+    // Облегчённая библиотека, содержит только карту, слой пробок,
+    // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).
+    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
 }

@@ -1,5 +1,6 @@
 package kz.bfgroup.formmap
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ class CustomMarkerDialogFragment: DialogFragment() {
     private lateinit var turnOnRequestButton: Button
     private lateinit var turnOffRequestButton: Button
     private lateinit var brightnessRequestSeekBar: SeekBar
+    private lateinit var goToDetailedInfoButton: Button
 
     private lateinit var fields: Map<String, String>
 
@@ -57,6 +59,11 @@ class CustomMarkerDialogFragment: DialogFragment() {
             addRequest()
         }
 
+        goToDetailedInfoButton.setOnClickListener {
+            val intent = Intent(rootView.context,LampByIdActivity::class.java)
+            startActivity(intent)
+        }
+
         Toast.makeText(rootView.context,lampIdFromActivity,Toast.LENGTH_LONG).show()
         Toast.makeText(rootView.context,userIdFromActivity,Toast.LENGTH_LONG).show()
 
@@ -67,6 +74,7 @@ class CustomMarkerDialogFragment: DialogFragment() {
         turnOnRequestButton = rootView.findViewById(R.id.lamp_turn_on_request)
         turnOffRequestButton = rootView.findViewById(R.id.lamp_turn_off_request)
         brightnessRequestSeekBar = rootView.findViewById(R.id.lamp_brightness)
+        goToDetailedInfoButton = rootView.findViewById(R.id.dialog_fragment_detailed_info_button)
 
         val lampData = arguments
         lampIdFromActivity = lampData?.getString("lamp_id").toString()

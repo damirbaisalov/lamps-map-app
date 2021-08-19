@@ -6,6 +6,31 @@
     android:paddingHorizontal="40dp"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Улица: "
+            />
+
+        <TextView
+            android:id="@+id/dialog_fragment_street_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:text="Кутузова 123"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/lamp_turn_on_request"
         android:layout_width="match_parent"
@@ -38,10 +63,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:progressBackgroundTint="@color/blue_1"
-        android:progress="5"
+        android:progress="20"
         android:max="100"
         android:paddingHorizontal="30dp"
+        android:layout_marginBottom="10dp"
+        android:thumb="@drawable/custom_thumb"
+        android:progressDrawable="@drawable/seekbar_style"
+        android:splitTrack="false"
+        />
+
+    <Button
+        android:id="@+id/dialog_fragment_detailed_info_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_lamp_detailed_info_button"
+        android:textColor="@color/blue_2"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_marginHorizontal="35dp"
+        android:textAllCaps="false"
+        android:text="Подробнее"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         />
 
