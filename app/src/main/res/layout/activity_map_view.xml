@@ -112,9 +112,24 @@
             />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/all_requests_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Все заявки"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:letterSpacing="0"
+        android:gravity="center"
+        android:background="@drawable/bg_activity_map_view_blue_button"
+        android:layout_below="@id/buttons_layout2"
+        />
+
     <LinearLayout
         android:id="@+id/groups_layout"
-        android:layout_below="@id/buttons_layout2"
+        android:layout_below="@id/all_requests_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_activity_map_view_groups_layout"
