@@ -3,7 +3,7 @@
     package="kz.bfgroup.formmap">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".FormMapApp"
@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FormMap">
+        <activity android:name=".requests_all.AllRequestsActivity" />
         <activity android:name=".NewGroupActivity" />
         <activity android:name=".NewLampActivity" />
         <activity android:name=".LampByIdActivity" />

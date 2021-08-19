@@ -62,4 +62,7 @@ dependencies {
     // Облегчённая библиотека, содержит только карту, слой пробок,
     // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).
     implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
+
+    // swipeRefresh
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }
