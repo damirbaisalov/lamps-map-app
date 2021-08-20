@@ -66,7 +66,7 @@ class CustomGroupDialogFragment: DialogFragment() {
 
                     groupApiDataResponseList.addAll(list)
 
-                    groupAdapter?.setList(groupApiDataResponseList)
+                    groupAdapter.setList(groupApiDataResponseList)
                 }
             }
 

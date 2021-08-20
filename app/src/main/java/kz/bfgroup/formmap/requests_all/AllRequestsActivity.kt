@@ -16,6 +16,8 @@ import kz.bfgroup.formmap.data.ApiRetrofit
 import kz.bfgroup.formmap.requests_all.models.RequestApiData
 import kz.bfgroup.formmap.requests_all.view.RequestAdapter
 import kz.bfgroup.formmap.requests_all.view.RequestClickListener
+import kz.bfgroup.formmap.requests_all.view.SuccessSubmitRequestDialogFragment
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,7 +76,7 @@ class AllRequestsActivity : AppCompatActivity() {
                     val list = response.body()!!
                     requestsApiDataResponseList.addAll(list)
                     requestAdapter.setList(requestsApiDataResponseList)
-                    Toast.makeText(this@AllRequestsActivity, getSavedUserID(), Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this@AllRequestsActivity, getSavedUserID(), Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -87,10 +89,31 @@ class AllRequestsActivity : AppCompatActivity() {
         })
     }
 
+    private fun okRequest(requestId: String) {
+        ApiRetrofit.getApiClient().submitRequest(requestId).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+//                    Toast.makeText(this@AllRequestsActivity, response.body()?.string(), Toast.LENGTH_LONG).show()
+                    val dialogFragment = SuccessSubmitRequestDialogFragment()
+                    val fragmentManager = supportFragmentManager
+
+                    val transaction = fragmentManager.beginTransaction()
+                    dialogFragment.show(transaction, "dialog")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Toast.makeText(this@AllRequestsActivity, t.message, Toast.LENGTH_LONG).show()
+            }
+
+        })
+    }
+
     private fun getRequestClickListener(): RequestClickListener {
         return object: RequestClickListener{
             override fun onClick(id: String?) {
-                Toast.makeText(this@AllRequestsActivity, id, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@AllRequestsActivity, id, Toast.LENGTH_SHORT).show()
+                okRequest(id!!)
             }
         }
     }
@@ -102,5 +125,10 @@ class AllRequestsActivity : AppCompatActivity() {
         )
 
         return sharedPreferences.getString(USER_ID, "default") ?: "default"
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadApiData()
     }
 }

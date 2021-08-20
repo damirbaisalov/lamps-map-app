@@ -64,8 +64,8 @@ class CustomMarkerDialogFragment: DialogFragment() {
             startActivity(intent)
         }
 
-        Toast.makeText(rootView.context,lampIdFromActivity,Toast.LENGTH_LONG).show()
-        Toast.makeText(rootView.context,userIdFromActivity,Toast.LENGTH_LONG).show()
+//        Toast.makeText(rootView.context,lampIdFromActivity,Toast.LENGTH_LONG).show()
+//        Toast.makeText(rootView.context,userIdFromActivity,Toast.LENGTH_LONG).show()
 
         return rootView
     }

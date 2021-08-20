@@ -22,7 +22,7 @@ interface ApiClient {
 
     //
     @FormUrlEncoded
-    @POST("request/ok")
+    @POST("request/ok.php")
     fun submitRequest(@Field("id") requestId: String) : Call<ResponseBody>
 
     //ok

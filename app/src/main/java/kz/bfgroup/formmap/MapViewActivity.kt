@@ -105,7 +105,7 @@ class MapViewActivity : AppCompatActivity(),
         }
 
         loadApiData()
-        loadGatewayMarkers()
+//        loadGatewayMarkers()
         loadGroupsApiData()
 
         refreshMapImageView.setOnClickListener {
@@ -114,7 +114,7 @@ class MapViewActivity : AppCompatActivity(),
                 lampIdList.clear()
                 groupsList.clear()
                 loadApiData()
-                loadGatewayMarkers()
+//                loadGatewayMarkers()
                 loadGroupsApiData()
             } catch (e:Exception) {
                 Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
@@ -133,7 +133,7 @@ class MapViewActivity : AppCompatActivity(),
                 "bright" to allLampBrightnessEditText.text.toString(),
                 "lamp_id" to lampIdList.toString()
             )
-            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
             addRequest()
         }
 
@@ -144,7 +144,7 @@ class MapViewActivity : AppCompatActivity(),
                 "bright" to allLampBrightnessEditText.text.toString(),
                 "lamp_id" to lampIdList.toString()
             )
-            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, fields.toString(), Toast.LENGTH_LONG).show()
             addRequest()
         }
 
@@ -242,11 +242,16 @@ class MapViewActivity : AppCompatActivity(),
                     val list = response.body()!!
 
                     for (index in list.indices) {
-                        val p = Point(
-                            list[index].positionX!!.toDouble(),
-                            list[index].positionY!!.toDouble()
-                        )
-                        drawGatewaysMarker(p)
+
+                        if(list[index].positionX.toString()=="0" || list[index].positionX.toString()=="1"){
+                            Toast.makeText(this@MapViewActivity, "ERRO OCCURRED WITH GATEWAY", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val p = Point(
+                                list[index].positionX!!.toDouble(),
+                                list[index].positionY!!.toDouble()
+                            )
+                            drawGatewaysMarker(p)
+                        }
                     }
                 }
             }
@@ -303,7 +308,7 @@ class MapViewActivity : AppCompatActivity(),
 
     override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
         Log.d("TAG", p0.toString())
-        Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
+//        Toast.makeText(this,"worked after change window", Toast.LENGTH_LONG).show()
         val lampData = Bundle()
         lampData.putString("user_id", getSavedUserID())
 
