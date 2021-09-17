@@ -31,6 +31,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.PointF
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.yandex.mapkit.user_location.UserLocationLayer
+import kz.bfgroup.formmap.common.LoadingDialog
 import kz.bfgroup.formmap.requests_all.AllRequestsActivity
 import java.lang.Exception
 
@@ -68,6 +69,8 @@ class MapViewActivity : AppCompatActivity(),
 
     private lateinit var fields: Map<String, String>
 
+    private val loadingDialog: LoadingDialog = LoadingDialog(this)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         MapKitFactory.initialize(this)
@@ -103,6 +106,8 @@ class MapViewActivity : AppCompatActivity(),
             val intent = Intent(this,AllRequestsActivity::class.java)
             startActivity(intent)
         }
+
+        loadingDialog.startLoadingDialog()
 
         loadApiData()
 //        loadGatewayMarkers()
@@ -206,30 +211,38 @@ class MapViewActivity : AppCompatActivity(),
     private fun loadApiData() {
         ApiRetrofit.getApiClient().getLamps().enqueue(object :Callback<List<LampApiData>> {
             override fun onResponse(call: Call<List<LampApiData>>, response: Response<List<LampApiData>>) {
+
+                loadingDialog.dialogDismiss()
                 if (response.isSuccessful){
                     val list = response.body()!!
                     lampList = list
 
                     for (index in list.indices) {
                         lampIdList.add(list[index].id!!)
-                        if(list[index].positionX.toString()=="null"){
 
-                        } else {
-                            val p = Point(
-                                list[index].positionX!!.toDouble(),
-                                list[index].positionY!!.toDouble()
-                            )
-                            if (list[index].status == "0") {
-                                drawLampsMarkerOff(p, list[index].lampId)
+                        try {
+                            if(list[index].positionX.toString()=="null" || list[index].positionX.toString()=="0"){
+
                             } else {
-                                drawLampsMarker(p, list[index].lampId)
+                                val p = Point(
+                                    list[index].positionX!!.toDouble(),
+                                    list[index].positionY!!.toDouble()
+                                )
+                                if (list[index].status == "0") {
+                                    drawLampsMarkerOff(p, list[index].lampId)
+                                } else {
+                                    drawLampsMarker(p, list[index].lampId)
+                                }
                             }
+                        } catch (e: Exception) {
+//                            Toast.makeText(this@MapViewActivity, e.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }
 
             override fun onFailure(call: Call<List<LampApiData>>, t: Throwable) {
+                loadingDialog.dialogDismiss()
                 Toast.makeText(this@MapViewActivity,t.message, Toast.LENGTH_LONG).show()
             }
         })

@@ -12,11 +12,13 @@ class RequestViewHolder(
     private val requestClickListener: RequestClickListener
 ): RecyclerView.ViewHolder(itemView) {
 
+    private val lampId: TextView = itemView.findViewById(R.id.request_item_lamp_id)
     private val requestText: TextView = itemView.findViewById(R.id.request_item_text)
     private val requestDate: TextView = itemView.findViewById(R.id.request_item_create_date)
     private val requestDone: Button = itemView.findViewById(R.id.request_item_done)
 
     fun onBind(requestApiData: RequestApiData) {
+        lampId.text = ("ID лампы: " + requestApiData.lampId)
         requestText.text = requestApiData.text
         requestDate.text = requestApiData.date
         requestDone.setOnClickListener {

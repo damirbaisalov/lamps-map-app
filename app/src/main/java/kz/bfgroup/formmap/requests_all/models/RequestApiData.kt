@@ -12,5 +12,7 @@ data class RequestApiData(
     @JsonProperty("text")
     val text: String?,
     @JsonProperty("create_date")
-    val date: String?
+    val date: String?,
+    @JsonProperty("lamp_id")
+    val lampId: String?
 )
